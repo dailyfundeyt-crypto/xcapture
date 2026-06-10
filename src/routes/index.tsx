@@ -44,6 +44,33 @@ const stagger = {
   show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
 };
 
+function CopyChip({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false);
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* ignore */
+    }
+  };
+  return (
+    <button
+      onClick={onCopy}
+      className="mx-1 inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-white/10 px-2 py-0.5 font-mono text-xs text-white hover:bg-white/20 transition-colors align-baseline"
+      title="Copy to clipboard"
+    >
+      <span>{value}</span>
+      {copied ? (
+        <Check className="h-3 w-3 text-green-400" />
+      ) : (
+        <Copy className="h-3 w-3 text-white/60" />
+      )}
+    </button>
+  );
+}
+
 function Index() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
