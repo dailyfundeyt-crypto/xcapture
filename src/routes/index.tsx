@@ -349,6 +349,7 @@ function Index() {
               Source code
             </motion.a>
           </div>
+          </div>
         </motion.section>
       </main>
 
