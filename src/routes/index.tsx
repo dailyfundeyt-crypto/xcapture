@@ -148,7 +148,7 @@ function Index() {
       </motion.header>
 
       {/* Hero */}
-      <main className="relative z-10 mx-auto max-w-6xl px-6 pt-16 pb-32">
+      <main className="relative z-10 mx-auto max-w-6xl px-6 pt-32 pb-32">
         <motion.div
           variants={stagger}
           initial="hidden"
