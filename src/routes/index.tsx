@@ -118,20 +118,20 @@ function Index() {
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-6"
+        className="fixed top-4 inset-x-0 z-30 mx-auto flex w-[min(92%,1100px)] items-center justify-between liquid-glass rounded-full px-5 py-2.5"
       >
-        <div className="flex items-center gap-2.5">
+        <div className="relative z-10 flex items-center gap-2.5">
           <img
             src={logoAsset.url}
             alt="XCapture logo"
-            className="h-8 w-8 object-contain invert"
+            className="h-7 w-7 object-contain invert"
           />
           <span className="text-sm font-semibold tracking-tight">XCapture</span>
         </div>
-        <nav className="flex items-center gap-5">
+        <nav className="relative z-10 flex items-center gap-1">
           <a
             href="#install"
-            className="text-sm text-white/60 hover:text-white transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-sm text-white/75 hover:text-white hover:bg-white/10 transition-colors"
           >
             Install guide
           </a>
@@ -139,7 +139,7 @@ function Index() {
             href={GITHUB_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm text-white/75 hover:text-white hover:bg-white/10 transition-colors"
           >
             <Github className="h-4 w-4" />
             GitHub
