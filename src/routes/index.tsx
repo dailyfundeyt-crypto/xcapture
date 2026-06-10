@@ -118,20 +118,20 @@ function Index() {
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-4 inset-x-0 z-30 mx-auto flex w-[min(92%,1100px)] items-center justify-between liquid-glass rounded-full px-5 py-2.5"
+        className="fixed top-4 inset-x-0 z-30 mx-auto flex w-[min(92%,1080px)] items-center justify-between liquid-glass liquid-highlight rounded-full pl-3 pr-2 py-2"
       >
-        <div className="relative z-10 flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 pl-2">
           <img
             src={logoAsset.url}
             alt="XCapture logo"
-            className="h-7 w-7 object-contain invert"
+            className="h-6 w-6 object-contain invert"
           />
-          <span className="text-sm font-semibold tracking-tight">XCapture</span>
+          <span className="text-[13px] font-semibold tracking-tight">XCapture</span>
         </div>
-        <nav className="relative z-10 flex items-center gap-1">
+        <nav className="flex items-center gap-1">
           <a
             href="#install"
-            className="rounded-full px-3.5 py-1.5 text-sm text-white/75 hover:text-white hover:bg-white/10 transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-colors"
           >
             Install guide
           </a>
@@ -139,9 +139,9 @@ function Index() {
             href={GITHUB_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm text-white/75 hover:text-white hover:bg-white/10 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-colors"
           >
-            <Github className="h-4 w-4" />
+            <Github className="h-3.5 w-3.5" />
             GitHub
           </a>
         </nav>
