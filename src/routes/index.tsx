@@ -286,12 +286,9 @@ function Index() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="mt-32 rounded-3xl border border-white/10 bg-white/[0.04] p-8 sm:p-12 backdrop-blur-md"
-          style={{
-            boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 60px -30px rgba(0,0,0,0.7)",
-          }}
+          className="liquid-glass mt-32 rounded-3xl p-8 sm:p-12"
         >
+          <div className="relative z-10">
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
             Install in 30 seconds
           </h2>
