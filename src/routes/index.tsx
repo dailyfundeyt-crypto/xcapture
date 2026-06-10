@@ -263,16 +263,16 @@ function Index() {
               key={f.title}
               variants={fadeUp}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              whileHover={{ y: -6, scale: 1.02 }}
-              className="liquid-glass rounded-2xl p-6"
+              whileHover={{ y: -4 }}
+              className="liquid-glass liquid-glass-hover liquid-highlight rounded-2xl p-6"
             >
-              <div className="relative z-10">
-                <f.icon className="h-5 w-5 text-white/90" />
-                <h3 className="mt-4 text-base font-medium">{f.title}</h3>
-                <p className="mt-2 text-sm text-white/65 leading-relaxed">
-                  {f.desc}
-                </p>
+              <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 border border-white/10">
+                <f.icon className="h-4.5 w-4.5 text-white" />
               </div>
+              <h3 className="mt-5 text-[15px] font-semibold tracking-tight">{f.title}</h3>
+              <p className="mt-2 text-[13.5px] text-white/60 leading-relaxed">
+                {f.desc}
+              </p>
             </motion.div>
           ))}
         </motion.div>
