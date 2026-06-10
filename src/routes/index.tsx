@@ -1,21 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, Chrome, FileDown, Zap, Shield } from "lucide-react";
+import { Download, Chrome, FileDown, Zap, Shield, Github } from "lucide-react";
+import logoAsset from "@/assets/xcapture-logo.png.asset.json";
+
+const GITHUB_URL = "https://github.com/dailyfundeyt-crypto/X-Article-Extension";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "X Article Downloader — Chrome Extension" },
+      { title: "XCapture — Save X articles to Obsidian in one click" },
       {
         name: "description",
         content:
-          "Download articles and threads from X (Twitter) with one click. Free Chrome extension.",
+          "XCapture is a free, open-source Chrome extension that saves any X (Twitter) post or article as a clean Obsidian-ready Markdown package with images.",
       },
-      { property: "og:title", content: "X Article Downloader — Chrome Extension" },
+      { property: "og:title", content: "XCapture — Save X articles to Obsidian" },
       {
         property: "og:description",
         content:
-          "Download articles and threads from X (Twitter) with one click. Free Chrome extension.",
+          "Free, open-source Chrome extension. Save any X post as Markdown + images, ready for Obsidian.",
       },
+      { property: "og:image", content: logoAsset.url },
+      { name: "twitter:image", content: logoAsset.url },
     ],
   }),
   component: Index,
@@ -23,7 +28,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const handleDownload = () => {
-    fetch("/x-article-downloader.zip")
+    fetch("/xcapture.zip")
       .then((res) => {
         if (!res.ok) throw new Error(`Download failed: ${res.status}`);
         return res.blob();
@@ -31,7 +36,7 @@ function Index() {
       .then((blob) => {
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = "x-article-downloader.zip";
+        a.download = "xcapture.zip";
         a.click();
         URL.revokeObjectURL(a.href);
       })
@@ -58,28 +63,47 @@ function Index() {
 
       {/* Nav */}
       <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-black font-bold">
-            𝕏
-          </div>
-          <span className="text-sm font-medium tracking-tight">
-            Article Downloader
-          </span>
+        <div className="flex items-center gap-2.5">
+          <img
+            src={logoAsset.url}
+            alt="XCapture logo"
+            className="h-8 w-8 object-contain invert"
+          />
+          <span className="text-sm font-semibold tracking-tight">XCapture</span>
         </div>
-        <a
-          href="#install"
-          className="text-sm text-white/60 hover:text-white transition-colors"
-        >
-          Install guide
-        </a>
+        <nav className="flex items-center gap-5">
+          <a
+            href="#install"
+            className="text-sm text-white/60 hover:text-white transition-colors"
+          >
+            Install guide
+          </a>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors"
+          >
+            <Github className="h-4 w-4" />
+            GitHub
+          </a>
+        </nav>
       </header>
 
       {/* Hero */}
-      <main className="relative z-10 mx-auto max-w-6xl px-6 pt-20 pb-32">
+      <main className="relative z-10 mx-auto max-w-6xl px-6 pt-16 pb-32">
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70 backdrop-blur">
             <Chrome className="h-3.5 w-3.5" />
-            Chrome Extension · v1.0
+            Chrome Extension · Open Source · v1.0
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <img
+              src={logoAsset.url}
+              alt="XCapture"
+              className="h-28 w-28 object-contain invert drop-shadow-[0_0_40px_rgba(255,255,255,0.25)]"
+            />
           </div>
 
           <h1 className="mt-8 text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.05]">
@@ -88,12 +112,12 @@ function Index() {
               X article
             </span>
             <br />
-            in one click.
+            straight to Obsidian.
           </h1>
 
           <p className="mt-6 text-lg text-white/60 max-w-xl mx-auto">
-            Download long-form posts, threads, and articles from X as clean,
-            readable files. No accounts. No tracking.
+            XCapture turns any X post or thread into a clean Markdown file with
+            all images bundled — ready to drop into your Obsidian vault.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -102,18 +126,21 @@ function Index() {
               className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-black hover:bg-white/90 transition-all shadow-[0_0_40px_rgba(255,255,255,0.25)]"
             >
               <Download className="h-4 w-4" />
-              Download Extension
+              Download XCapture
             </button>
             <a
-              href="#install"
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-medium text-white hover:bg-white/10 transition-colors backdrop-blur"
             >
-              How to install
+              <Github className="h-4 w-4" />
+              View on GitHub
             </a>
           </div>
 
           <p className="mt-4 text-xs text-white/40">
-            Free · Works on Chrome, Edge, Brave, Arc
+            Free & open source · Chrome, Edge, Brave, Arc
           </p>
         </div>
 
@@ -122,18 +149,18 @@ function Index() {
           {[
             {
               icon: Zap,
-              title: "Instant capture",
-              desc: "One click on any X post saves the full article locally.",
+              title: "One-click capture",
+              desc: "Grab any X post, thread, or article without leaving the page.",
             },
             {
               icon: FileDown,
-              title: "Clean formats",
-              desc: "Export as Markdown, plain text, or PDF — ready to read.",
+              title: "Obsidian-ready",
+              desc: "Exports a Markdown file plus an images folder — drop straight into your vault.",
             },
             {
               icon: Shield,
-              title: "Private by default",
-              desc: "Runs locally in your browser. Nothing leaves your device.",
+              title: "Private & open",
+              desc: "Runs locally in your browser. 100% open source on GitHub.",
             },
           ].map((f) => (
             <div
@@ -173,18 +200,37 @@ function Index() {
             ))}
           </ol>
 
-          <button
-            onClick={handleDownload}
-            className="mt-10 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black hover:bg-white/90 transition-all"
-          >
-            <Download className="h-4 w-4" />
-            Download .zip
-          </button>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <button
+              onClick={handleDownload}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black hover:bg-white/90 transition-all"
+            >
+              <Download className="h-4 w-4" />
+              Download .zip
+            </button>
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+            >
+              <Github className="h-4 w-4" />
+              Source code
+            </a>
+          </div>
         </section>
       </main>
 
       <footer className="relative z-10 border-t border-white/10 py-8 text-center text-xs text-white/40">
-        © {new Date().getFullYear()} X Article Downloader
+        © {new Date().getFullYear()} XCapture · Open source on{" "}
+        <a
+          href={GITHUB_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="underline hover:text-white/70"
+        >
+          GitHub
+        </a>
       </footer>
     </div>
   );
