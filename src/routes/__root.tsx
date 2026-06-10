@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
@@ -79,17 +80,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "XCapture" },
-      { name: "description", content: "Download articles from web pages with this Chrome extension." },
+      {
+        name: "description",
+        content: "Download articles from web pages with this Chrome extension.",
+      },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "XCapture" },
-      { property: "og:description", content: "Download articles from web pages with this Chrome extension." },
+      {
+        property: "og:description",
+        content: "Download articles from web pages with this Chrome extension.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "XCapture" },
-      { name: "twitter:description", content: "Download articles from web pages with this Chrome extension." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a7d2473-69bc-4e23-9566-95a3f260a203/id-preview-aee64b8b--1ede0fbd-6284-4890-86dd-f2efabe4e99f.lovable.a[...]
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a7d2473-69bc-4e23-9566-95a3f260a203/id-preview-aee64b8b--1ede0fbd-6284-4890-86dd-f2efabe4e99f.lovable.[...]
+      {
+        name: "twitter:description",
+        content: "Download articles from web pages with this Chrome extension.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a7d2473-69bc-4e23-9566-95a3f260a203/id-preview-aee64b8b--1ede0fbd-6284-4890-86dd-f2efabe4e99f.lovable.app",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a7d2473-69bc-4e23-9566-95a3f260a203/id-preview-aee64b8b--1ede0fbd-6284-4890-86dd-f2efabe4e99f.lovable.app",
+      },
     ],
     links: [
       {
@@ -126,6 +144,7 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Analytics />
+      <SpeedInsights />
     </QueryClientProvider>
   );
 }
