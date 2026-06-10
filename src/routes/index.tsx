@@ -158,12 +158,10 @@ function Index() {
           <motion.div
             variants={fadeUp}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="liquid-glass inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs text-white/80"
+            className="liquid-glass inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-medium tracking-wide uppercase text-white/75"
           >
-            <span className="relative z-10 inline-flex items-center gap-2">
-              <Chrome className="h-3.5 w-3.5" />
-              Chrome Extension · Open Source · v1.0
-            </span>
+            <Chrome className="h-3.5 w-3.5" />
+            <span>Chrome Extension · Open Source · v1.0</span>
           </motion.div>
 
           <motion.div
