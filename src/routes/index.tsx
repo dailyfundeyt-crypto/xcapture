@@ -102,7 +102,7 @@ function Index() {
             <img
               src={logoAsset.url}
               alt="XCapture"
-              className="h-28 w-28 object-contain invert drop-shadow-[0_0_40px_rgba(255,255,255,0.25)]"
+              className="h-56 w-56 sm:h-72 sm:w-72 object-contain invert drop-shadow-[0_0_60px_rgba(255,255,255,0.3)]"
             />
           </div>
 
