@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, Chrome, FileDown, Zap, Shield, Github } from "lucide-react";
+import { Download, Chrome, FileDown, Zap, Shield, Github, Copy, Check } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import logoAsset from "@/assets/xcapture-logo.png.asset.json";
@@ -270,10 +270,14 @@ function Index() {
           </h2>
           <ol className="mt-8 space-y-5">
             {[
-              "Download the ZIP and unzip it on your computer.",
-              "Open chrome://extensions in your browser.",
-              "Enable Developer mode in the top-right corner.",
-              "Click Load unpacked and select the unzipped folder.",
+              { text: "Download the ZIP and unzip it on your computer." },
+              {
+                text: "Open ",
+                copy: "chrome://extensions",
+                after: " in your browser.",
+              },
+              { text: "Enable Developer mode in the top-right corner." },
+              { text: "Click Load unpacked and select the unzipped folder." },
             ].map((step, i) => (
               <motion.li
                 key={i}
@@ -286,7 +290,15 @@ function Index() {
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-xs font-medium text-white/80">
                   {i + 1}
                 </span>
-                <span className="text-white/75 pt-0.5">{step}</span>
+                <span className="text-white/75 pt-0.5">
+                  {step.text}
+                  {step.copy && (
+                    <>
+                      <CopyChip value={step.copy} />
+                      {step.after}
+                    </>
+                  )}
+                </span>
               </motion.li>
             ))}
           </ol>
