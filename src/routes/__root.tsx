@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { Analytics } from "@vercel/analytics/react";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
@@ -87,8 +88,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "XCapture" },
       { name: "twitter:description", content: "Download articles from web pages with this Chrome extension." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a7d2473-69bc-4e23-9566-95a3f260a203/id-preview-aee64b8b--1ede0fbd-6284-4890-86dd-f2efabe4e99f.lovable.app-1781112957539.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a7d2473-69bc-4e23-9566-95a3f260a203/id-preview-aee64b8b--1ede0fbd-6284-4890-86dd-f2efabe4e99f.lovable.app-1781112957539.png" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a7d2473-69bc-4e23-9566-95a3f260a203/id-preview-aee64b8b--1ede0fbd-6284-4890-86dd-f2efabe4e99f.lovable.a[...]
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a7d2473-69bc-4e23-9566-95a3f260a203/id-preview-aee64b8b--1ede0fbd-6284-4890-86dd-f2efabe4e99f.lovable.[...]
     ],
     links: [
       {
@@ -124,6 +125,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Analytics />
     </QueryClientProvider>
   );
 }
