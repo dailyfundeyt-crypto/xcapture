@@ -1,6 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Download, Chrome, FileDown, Zap, Shield, Github } from "lucide-react";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import logoAsset from "@/assets/xcapture-logo.png.asset.json";
+import { TiltLogo } from "@/components/TiltLogo";
+
+const ThreeBackground = lazy(() =>
+  import("@/components/ThreeBackground").then((m) => ({
+    default: m.ThreeBackground,
+  })),
+);
 
 const GITHUB_URL = "https://github.com/dailyfundeyt-crypto/X-Article-Extension";
 
@@ -26,7 +35,19 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0 },
+};
+
+const stagger = {
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
+};
+
 function Index() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const handleDownload = () => {
     fetch("/xcapture.zip")
       .then((res) => {
@@ -45,24 +66,33 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[900px] rounded-full bg-white/[0.06] blur-3xl" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-white/[0.04] blur-3xl" />
+      {/* 3D Three.js background */}
+      {mounted && (
+        <Suspense fallback={null}>
+          <ThreeBackground />
+        </Suspense>
+      )}
 
-      {/* Grid */}
+      {/* Vignette + grid overlay above 3D */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.07]"
+        className="pointer-events-none fixed inset-0 z-[1] opacity-[0.06]"
         style={{
           backgroundImage:
             "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
+          backgroundSize: "56px 56px",
           maskImage:
-            "radial-gradient(ellipse at center, black 40%, transparent 75%)",
+            "radial-gradient(ellipse at center, black 30%, transparent 75%)",
         }}
       />
+      <div className="pointer-events-none fixed inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.6)_70%,#000_100%)]" />
 
       {/* Nav */}
-      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+      <motion.header
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-6"
+      >
         <div className="flex items-center gap-2.5">
           <img
             src={logoAsset.url}
@@ -88,47 +118,76 @@ function Index() {
             GitHub
           </a>
         </nav>
-      </header>
+      </motion.header>
 
       {/* Hero */}
       <main className="relative z-10 mx-auto max-w-6xl px-6 pt-16 pb-32">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70 backdrop-blur">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="mx-auto max-w-3xl text-center"
+        >
+          <motion.div
+            variants={fadeUp}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70 backdrop-blur"
+          >
             <Chrome className="h-3.5 w-3.5" />
             Chrome Extension · Open Source · v1.0
-          </div>
+          </motion.div>
 
-          <div className="mt-10 flex justify-center">
-            <img
+          <motion.div
+            variants={fadeUp}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mt-10 flex justify-center"
+          >
+            <TiltLogo
               src={logoAsset.url}
               alt="XCapture"
-              className="h-56 w-56 sm:h-72 sm:w-72 object-contain invert drop-shadow-[0_0_60px_rgba(255,255,255,0.3)]"
+              className="h-64 w-64 sm:h-80 sm:w-80"
             />
-          </div>
+          </motion.div>
 
-          <h1 className="mt-8 text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.05]">
+          <motion.h1
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="mt-8 text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.05]"
+          >
             Save any{" "}
             <span className="bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
               X article
             </span>
             <br />
             straight to Obsidian.
-          </h1>
+          </motion.h1>
 
-          <p className="mt-6 text-lg text-white/60 max-w-xl mx-auto">
+          <motion.p
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="mt-6 text-lg text-white/60 max-w-xl mx-auto"
+          >
             XCapture turns any X post or thread into a clean Markdown file with
             all images bundled — ready to drop into your Obsidian vault.
-          </p>
+          </motion.p>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button
+          <motion.div
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3"
+          >
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={handleDownload}
-              className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-black hover:bg-white/90 transition-all shadow-[0_0_40px_rgba(255,255,255,0.25)]"
+              className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-black shadow-[0_0_40px_rgba(255,255,255,0.3)]"
             >
               <Download className="h-4 w-4" />
               Download XCapture
-            </button>
-            <a
+            </motion.button>
+            <motion.a
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               href={GITHUB_URL}
               target="_blank"
               rel="noreferrer"
@@ -136,16 +195,26 @@ function Index() {
             >
               <Github className="h-4 w-4" />
               View on GitHub
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
 
-          <p className="mt-4 text-xs text-white/40">
+          <motion.p
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="mt-4 text-xs text-white/40"
+          >
             Free & open source · Chrome, Edge, Brave, Arc
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Features */}
-        <div className="mt-32 grid gap-4 sm:grid-cols-3">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="mt-32 grid gap-4 sm:grid-cols-3"
+        >
           {[
             {
               icon: Zap,
@@ -163,23 +232,38 @@ function Index() {
               desc: "Runs locally in your browser. 100% open source on GitHub.",
             },
           ].map((f) => (
-            <div
+            <motion.div
               key={f.title}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm hover:bg-white/[0.05] transition-colors"
+              variants={fadeUp}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md hover:bg-white/[0.07] transition-colors"
+              style={{
+                boxShadow:
+                  "inset 0 1px 0 rgba(255,255,255,0.06), 0 20px 40px -20px rgba(0,0,0,0.6)",
+              }}
             >
               <f.icon className="h-5 w-5 text-white/80" />
               <h3 className="mt-4 text-base font-medium">{f.title}</h3>
               <p className="mt-2 text-sm text-white/55 leading-relaxed">
                 {f.desc}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Install */}
-        <section
+        <motion.section
           id="install"
-          className="mt-32 rounded-3xl border border-white/10 bg-white/[0.03] p-8 sm:p-12 backdrop-blur-sm"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="mt-32 rounded-3xl border border-white/10 bg-white/[0.04] p-8 sm:p-12 backdrop-blur-md"
+          style={{
+            boxShadow:
+              "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 60px -30px rgba(0,0,0,0.7)",
+          }}
         >
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
             Install in 30 seconds
@@ -191,24 +275,35 @@ function Index() {
               "Enable Developer mode in the top-right corner.",
               "Click Load unpacked and select the unzipped folder.",
             ].map((step, i) => (
-              <li key={i} className="flex gap-4 items-start">
+              <motion.li
+                key={i}
+                initial={{ opacity: 0, x: -16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="flex gap-4 items-start"
+              >
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-xs font-medium text-white/80">
                   {i + 1}
                 </span>
                 <span className="text-white/75 pt-0.5">{step}</span>
-              </li>
+              </motion.li>
             ))}
           </ol>
 
           <div className="mt-10 flex flex-wrap gap-3">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={handleDownload}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black hover:bg-white/90 transition-all"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black"
             >
               <Download className="h-4 w-4" />
               Download .zip
-            </button>
-            <a
+            </motion.button>
+            <motion.a
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               href={GITHUB_URL}
               target="_blank"
               rel="noreferrer"
@@ -216,9 +311,9 @@ function Index() {
             >
               <Github className="h-4 w-4" />
               Source code
-            </a>
+            </motion.a>
           </div>
-        </section>
+        </motion.section>
       </main>
 
       <footer className="relative z-10 border-t border-white/10 py-8 text-center text-xs text-white/40">
