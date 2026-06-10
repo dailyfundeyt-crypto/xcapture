@@ -284,9 +284,9 @@ function Index() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="liquid-glass mt-32 rounded-3xl p-8 sm:p-12"
+          className="liquid-glass liquid-highlight mt-32 rounded-3xl p-8 sm:p-12"
         >
-          <div className="relative z-10">
+          <div>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
             Install in 30 seconds
           </h2>
