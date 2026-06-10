@@ -58,7 +58,7 @@ function CopyChip({ value }: { value: string }) {
   return (
     <button
       onClick={onCopy}
-      className="liquid-glass mx-1 inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 font-mono text-[12px] text-white hover:bg-white/[0.12] transition-colors align-baseline"
+      className="mx-1 inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-white/10 px-2 py-0.5 font-mono text-xs text-white hover:bg-white/20 transition-colors align-baseline"
       title="Copy to clipboard"
     >
       <span>{value}</span>
@@ -118,20 +118,20 @@ function Index() {
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-4 inset-x-0 z-30 mx-auto flex w-[min(92%,1080px)] items-center justify-between liquid-glass liquid-highlight rounded-full pl-3 pr-2 py-2"
+        className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-6"
       >
-        <div className="flex items-center gap-2.5 pl-2">
+        <div className="flex items-center gap-2.5">
           <img
             src={logoAsset.url}
             alt="XCapture logo"
-            className="h-6 w-6 object-contain invert"
+            className="h-8 w-8 object-contain invert"
           />
-          <span className="text-[13px] font-semibold tracking-tight">XCapture</span>
+          <span className="text-sm font-semibold tracking-tight">XCapture</span>
         </div>
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-5">
           <a
             href="#install"
-            className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-colors"
+            className="text-sm text-white/60 hover:text-white transition-colors"
           >
             Install guide
           </a>
@@ -139,16 +139,16 @@ function Index() {
             href={GITHUB_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors"
           >
-            <Github className="h-3.5 w-3.5" />
+            <Github className="h-4 w-4" />
             GitHub
           </a>
         </nav>
       </motion.header>
 
       {/* Hero */}
-      <main className="relative z-10 mx-auto max-w-6xl px-6 pt-32 pb-32">
+      <main className="relative z-10 mx-auto max-w-6xl px-6 pt-16 pb-32">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -158,10 +158,10 @@ function Index() {
           <motion.div
             variants={fadeUp}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="liquid-glass inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-medium tracking-wide uppercase text-white/75"
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70 backdrop-blur"
           >
             <Chrome className="h-3.5 w-3.5" />
-            <span>Chrome Extension · Open Source · v1.0</span>
+            Chrome Extension · Open Source · v1.0
           </motion.div>
 
           <motion.div
@@ -263,14 +263,16 @@ function Index() {
               key={f.title}
               variants={fadeUp}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              whileHover={{ y: -4 }}
-              className="liquid-glass liquid-glass-hover liquid-highlight rounded-2xl p-6"
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md hover:bg-white/[0.07] transition-colors"
+              style={{
+                boxShadow:
+                  "inset 0 1px 0 rgba(255,255,255,0.06), 0 20px 40px -20px rgba(0,0,0,0.6)",
+              }}
             >
-              <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 border border-white/10">
-                <f.icon className="h-4.5 w-4.5 text-white" />
-              </div>
-              <h3 className="mt-5 text-[15px] font-semibold tracking-tight">{f.title}</h3>
-              <p className="mt-2 text-[13.5px] text-white/60 leading-relaxed">
+              <f.icon className="h-5 w-5 text-white/80" />
+              <h3 className="mt-4 text-base font-medium">{f.title}</h3>
+              <p className="mt-2 text-sm text-white/55 leading-relaxed">
                 {f.desc}
               </p>
             </motion.div>
@@ -284,9 +286,12 @@ function Index() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="liquid-glass liquid-highlight mt-32 rounded-3xl p-8 sm:p-12"
+          className="mt-32 rounded-3xl border border-white/10 bg-white/[0.04] p-8 sm:p-12 backdrop-blur-md"
+          style={{
+            boxShadow:
+              "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 60px -30px rgba(0,0,0,0.7)",
+          }}
         >
-          <div>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
             Install in 30 seconds
           </h2>
@@ -346,7 +351,6 @@ function Index() {
               <Github className="h-4 w-4" />
               Source code
             </motion.a>
-          </div>
           </div>
         </motion.section>
       </main>
