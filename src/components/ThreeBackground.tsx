@@ -56,10 +56,7 @@ export function ThreeBackground() {
     // Floating wireframe icosahedrons — subtle 3D anchors
     const shapes: THREE.LineSegments[] = [];
     for (let i = 0; i < 5; i++) {
-      const geo = new THREE.IcosahedronGeometry(
-        0.8 + Math.random() * 1.2,
-        0,
-      );
+      const geo = new THREE.IcosahedronGeometry(0.8 + Math.random() * 1.2, 0);
       const edges = new THREE.EdgesGeometry(geo);
       const mat = new THREE.LineBasicMaterial({
         color: 0xffffff,
@@ -176,10 +173,6 @@ export function ThreeBackground() {
   }, []);
 
   return (
-    <div
-      ref={mountRef}
-      className="pointer-events-none fixed inset-0 z-0"
-      aria-hidden="true"
-    />
+    <div ref={mountRef} className="pointer-events-none fixed inset-0 z-0" aria-hidden="true" />
   );
 }

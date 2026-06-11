@@ -107,8 +107,7 @@ function Index() {
           backgroundImage:
             "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
           backgroundSize: "56px 56px",
-          maskImage:
-            "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+          maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
         }}
       />
       <div className="pointer-events-none fixed inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.6)_70%,#000_100%)]" />
@@ -121,18 +120,11 @@ function Index() {
         className="relative z-20 mx-auto flex max-w-6xl items-center justify-between px-6 py-6"
       >
         <div className="flex items-center gap-2.5">
-          <img
-            src={logoAsset.url}
-            alt="XCapture logo"
-            className="h-8 w-8 object-contain invert"
-          />
+          <img src={logoAsset.url} alt="XCapture logo" className="h-8 w-8 object-contain invert" />
           <span className="text-sm font-semibold tracking-tight">XCapture</span>
         </div>
         <nav className="flex items-center gap-5">
-          <a
-            href="#install"
-            className="text-sm text-white/60 hover:text-white transition-colors"
-          >
+          <a href="#install" className="text-sm text-white/60 hover:text-white transition-colors">
             Install guide
           </a>
           <a
@@ -169,11 +161,7 @@ function Index() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="mt-10 flex justify-center"
           >
-            <TiltLogo
-              src={logoAsset.url}
-              alt="XCapture"
-              className="h-64 w-64 sm:h-80 sm:w-80"
-            />
+            <TiltLogo src={logoAsset.url} alt="XCapture" className="h-64 w-64 sm:h-80 sm:w-80" />
           </motion.div>
 
           <motion.h1
@@ -194,8 +182,8 @@ function Index() {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="mt-6 text-lg text-white/60 max-w-xl mx-auto"
           >
-            XCapture turns any X post or thread into a clean Markdown file with
-            all images bundled — ready to drop into your Obsidian vault.
+            XCapture turns any X post or thread into a clean Markdown file with all images bundled —
+            ready to drop into your Obsidian vault.
           </motion.p>
 
           <motion.div
@@ -272,9 +260,7 @@ function Index() {
             >
               <f.icon className="h-5 w-5 text-white/80" />
               <h3 className="mt-4 text-base font-medium">{f.title}</h3>
-              <p className="mt-2 text-sm text-white/55 leading-relaxed">
-                {f.desc}
-              </p>
+              <p className="mt-2 text-sm text-white/55 leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -288,8 +274,7 @@ function Index() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="mt-32 rounded-3xl border border-white/10 bg-white/[0.04] p-8 sm:p-12 backdrop-blur-md"
           style={{
-            boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 60px -30px rgba(0,0,0,0.7)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 60px -30px rgba(0,0,0,0.7)",
           }}
         >
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
