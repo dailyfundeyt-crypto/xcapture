@@ -15,6 +15,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { captureArticle } from "@/lib/api/capture.functions";
 import { saveArticle } from "@/lib/api/articles.functions";
+import { classifyArticle } from "@/lib/api/vault.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "@tanstack/react-router";
 
@@ -106,6 +107,7 @@ async function callOwnAi(byok: Byok, source: string, kind: "url" | "text"): Prom
 export function AICapture() {
   const capture = useServerFn(captureArticle);
   const save = useServerFn(saveArticle);
+  const classify = useServerFn(classifyArticle);
   const [kind, setKind] = useState<"url" | "text">("url");
   const [source, setSource] = useState("");
   const [vault, setVault] = useState("");
@@ -116,6 +118,8 @@ export function AICapture() {
   const [saved, setSaved] = useState(false);
   const [savingLib, setSavingLib] = useState(false);
   const [authed, setAuthed] = useState(false);
+  const [suggestedFolder, setSuggestedFolder] = useState<string>("");
+  const [folderIsNew, setFolderIsNew] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
