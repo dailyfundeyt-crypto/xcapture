@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Download, Chrome, FileDown, Zap, Shield, Github, Copy, Check } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import logoAsset from "@/assets/xcapture-logo.png.asset.json";
 import { TiltLogo } from "@/components/TiltLogo";
 import { AICapture } from "@/components/AICapture";
+import { supabase } from "@/integrations/supabase/client";
 
 const ThreeBackground = lazy(() =>
   import("@/components/ThreeBackground").then((m) => ({
@@ -74,7 +75,13 @@ function CopyChip({ value }: { value: string }) {
 
 function Index() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [authed, setAuthed] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const handleDownload = () => {
     fetch("/xcapture.zip")
@@ -145,6 +152,22 @@ function Index() {
             <Github className="h-4 w-4" />
             GitHub
           </a>
+          {mounted &&
+            (authed ? (
+              <Link
+                to="/dashboard"
+                className="rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-black hover:opacity-90"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/auth"
+                className="rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-white hover:bg-white/10"
+              >
+                Sign in
+              </Link>
+            ))}
         </nav>
       </motion.header>
 

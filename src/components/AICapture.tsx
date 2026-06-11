@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles,
@@ -10,9 +10,13 @@ import {
   Key,
   Loader2,
   ExternalLink,
+  CloudUpload,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { captureArticle } from "@/lib/api/capture.functions";
+import { saveArticle } from "@/lib/api/articles.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "@tanstack/react-router";
 
 type CaptureResult = {
   title: string;
@@ -101,6 +105,7 @@ async function callOwnAi(byok: Byok, source: string, kind: "url" | "text"): Prom
 
 export function AICapture() {
   const capture = useServerFn(captureArticle);
+  const save = useServerFn(saveArticle);
   const [kind, setKind] = useState<"url" | "text">("url");
   const [source, setSource] = useState("");
   const [vault, setVault] = useState("");
@@ -108,6 +113,15 @@ export function AICapture() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CaptureResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [savingLib, setSavingLib] = useState(false);
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const [byok, setByok] = useState<Byok>(() => loadByok());
   const [showByok, setShowByok] = useState(false);
@@ -336,9 +350,54 @@ export function AICapture() {
             {result.markdown}
           </pre>
           <div className="flex flex-wrap gap-2 border-t border-white/10 p-4">
+            {authed ? (
+              <button
+                onClick={async () => {
+                  if (!result) return;
+                  setSavingLib(true);
+                  try {
+                    await save({
+                      data: {
+                        source_url: kind === "url" ? source.trim() : null,
+                        title: result.title,
+                        summary: result.summary,
+                        markdown: result.markdown,
+                        tags: result.tags,
+                        key_points: result.keyPoints,
+                      },
+                    });
+                    setSaved(true);
+                    setTimeout(() => setSaved(false), 2500);
+                  } catch (e) {
+                    setError(e instanceof Error ? e.message : String(e));
+                  } finally {
+                    setSavingLib(false);
+                  }
+                }}
+                disabled={savingLib || saved}
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-medium text-black disabled:opacity-70"
+              >
+                {savingLib ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : saved ? (
+                  <Check className="h-3.5 w-3.5" />
+                ) : (
+                  <CloudUpload className="h-3.5 w-3.5" />
+                )}
+                {saved ? "Saved to library" : "Save to library"}
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-medium text-black"
+              >
+                <CloudUpload className="h-3.5 w-3.5" />
+                Sign in to save
+              </Link>
+            )}
             <button
               onClick={openInObsidian}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-medium text-black"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-medium text-white hover:bg-white/10"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               Open in Obsidian
