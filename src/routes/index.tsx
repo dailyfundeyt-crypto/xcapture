@@ -145,6 +145,22 @@ function Index() {
             <Github className="h-4 w-4" />
             GitHub
           </a>
+          {mounted &&
+            (authed ? (
+              <Link
+                to="/_authenticated/dashboard"
+                className="rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-black hover:opacity-90"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/auth"
+                className="rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-white hover:bg-white/10"
+              >
+                Sign in
+              </Link>
+            ))}
         </nav>
       </motion.header>
 
