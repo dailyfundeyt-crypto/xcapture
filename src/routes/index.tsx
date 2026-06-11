@@ -235,6 +235,9 @@ function Index() {
           </motion.p>
         </motion.div>
 
+        {/* AI Capture demo */}
+        <AICapture />
+
         {/* Features */}
         <motion.div
           variants={stagger}
