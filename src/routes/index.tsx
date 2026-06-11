@@ -75,7 +75,13 @@ function CopyChip({ value }: { value: string }) {
 
 function Index() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [authed, setAuthed] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const handleDownload = () => {
     fetch("/xcapture.zip")
