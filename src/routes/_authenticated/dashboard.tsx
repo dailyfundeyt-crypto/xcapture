@@ -65,6 +65,12 @@ function Dashboard() {
           <div className="flex items-center gap-4 text-sm">
             <span className="text-white/50 hidden sm:inline">{email}</span>
             <Link
+              to="/workspace"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-black font-medium"
+            >
+              <Sparkles className="h-3.5 w-3.5" /> Workspace
+            </Link>
+            <Link
               to="/settings"
               className="inline-flex items-center gap-1.5 text-white/70 hover:text-white"
             >
