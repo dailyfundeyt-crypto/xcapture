@@ -15,6 +15,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { captureArticle } from "@/lib/api/capture.functions";
 import { saveArticle } from "@/lib/api/articles.functions";
+import { classifyArticle } from "@/lib/api/vault.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "@tanstack/react-router";
 
@@ -106,6 +107,7 @@ async function callOwnAi(byok: Byok, source: string, kind: "url" | "text"): Prom
 export function AICapture() {
   const capture = useServerFn(captureArticle);
   const save = useServerFn(saveArticle);
+  const classify = useServerFn(classifyArticle);
   const [kind, setKind] = useState<"url" | "text">("url");
   const [source, setSource] = useState("");
   const [vault, setVault] = useState("");
@@ -116,6 +118,8 @@ export function AICapture() {
   const [saved, setSaved] = useState(false);
   const [savingLib, setSavingLib] = useState(false);
   const [authed, setAuthed] = useState(false);
+  const [suggestedFolder, setSuggestedFolder] = useState<string>("");
+  const [folderIsNew, setFolderIsNew] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
@@ -138,6 +142,7 @@ export function AICapture() {
   const run = async () => {
     setError(null);
     setResult(null);
+    setSuggestedFolder("");
     if (!source.trim()) {
       setError("Please paste a URL or text first.");
       return;
@@ -149,6 +154,17 @@ export function AICapture() {
           ? await callOwnAi(byok, source.trim(), kind)
           : await capture({ data: { source: source.trim(), kind } });
       setResult(r);
+      if (authed) {
+        // Fire-and-forget folder suggestion
+        classify({ data: { title: r.title, summary: r.summary, tags: r.tags } })
+          .then((c) => {
+            setSuggestedFolder(c.folder);
+            setFolderIsNew(c.isNew);
+          })
+          .catch(() => {
+            /* non-fatal */
+          });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -349,6 +365,25 @@ export function AICapture() {
           <pre className="max-h-80 overflow-auto p-5 text-xs text-white/70 font-mono whitespace-pre-wrap">
             {result.markdown}
           </pre>
+          {authed && (
+            <div className="border-t border-white/10 p-4 flex flex-wrap items-center gap-2">
+              <label className="text-[11px] text-white/50">
+                {suggestedFolder ? (
+                  <span>
+                    AI suggests folder{folderIsNew ? " (new)" : ""}:
+                  </span>
+                ) : (
+                  <span>Folder</span>
+                )}
+              </label>
+              <input
+                value={suggestedFolder}
+                onChange={(e) => setSuggestedFolder(e.target.value)}
+                placeholder="Auto-suggested after generation…"
+                className="flex-1 min-w-[160px] rounded-lg border border-white/10 bg-black/40 px-3 py-1.5 text-xs outline-none focus:border-white/30"
+              />
+            </div>
+          )}
           <div className="flex flex-wrap gap-2 border-t border-white/10 p-4">
             {authed ? (
               <button
@@ -364,6 +399,7 @@ export function AICapture() {
                         markdown: result.markdown,
                         tags: result.tags,
                         key_points: result.keyPoints,
+                        folder: suggestedFolder.trim() || null,
                       },
                     });
                     setSaved(true);
