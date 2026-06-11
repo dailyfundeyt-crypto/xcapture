@@ -184,12 +184,12 @@ function WorkspacePage() {
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        headers: async () => {
+        headers: (async () => {
           const { supabase } = await import("@/integrations/supabase/client");
           const { data } = await supabase.auth.getSession();
           const token = data.session?.access_token;
           return token ? { Authorization: `Bearer ${token}` } : {};
-        },
+        }) as unknown as () => Record<string, string>,
       }),
     [],
   );
@@ -202,22 +202,23 @@ function WorkspacePage() {
     if (status !== "ready") return;
     const last = messages[messages.length - 1];
     if (!last || last.role !== "assistant") return;
-    const wrote = last.parts.some(
-      (p: { type: string; toolName?: string; output?: { ok?: boolean; path?: string } }) =>
-        p.type?.startsWith("tool-") &&
-        (p.toolName === "write_note" || p.type === "tool-write_note") &&
-        p.output?.ok,
-    );
-    if (wrote) {
+    let wrotePath: string | null = null;
+    for (const p of last.parts as Array<{ type: string; output?: unknown }>) {
+      if (p.type === "tool-write_note" && p.output) {
+        const out = p.output as { ok?: boolean; path?: string };
+        if (out.ok && out.path) {
+          wrotePath = out.path;
+          break;
+        }
+      }
+    }
+    if (wrotePath) {
       refresh().catch(console.error);
-      const written = last.parts.find(
-        (p: { type: string; output?: { path?: string } }) =>
-          p.type === "tool-write_note" && p.output?.path,
-      ) as { output?: { path?: string } } | undefined;
-      if (written?.output?.path) setActivePath(written.output.path);
+      setActivePath(wrotePath);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, messages]);
+
 
 
   const onSend = async () => {
