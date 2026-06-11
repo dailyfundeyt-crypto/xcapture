@@ -69,7 +69,7 @@ function SettingsPage() {
       <header className="border-b border-white/10">
         <div className="mx-auto max-w-3xl px-6 py-4">
           <Link
-            to="/_authenticated/dashboard"
+            to="/dashboard"
             className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white"
           >
             <ArrowLeft className="h-4 w-4" /> Dashboard

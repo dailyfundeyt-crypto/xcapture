@@ -65,7 +65,7 @@ function Dashboard() {
           <div className="flex items-center gap-4 text-sm">
             <span className="text-white/50 hidden sm:inline">{email}</span>
             <Link
-              to="/_authenticated/settings"
+              to="/settings"
               className="inline-flex items-center gap-1.5 text-white/70 hover:text-white"
             >
               <Settings className="h-4 w-4" /> Settings

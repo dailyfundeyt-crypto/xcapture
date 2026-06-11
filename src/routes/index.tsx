@@ -155,7 +155,7 @@ function Index() {
           {mounted &&
             (authed ? (
               <Link
-                to="/_authenticated/dashboard"
+                to="/dashboard"
                 className="rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-black hover:opacity-90"
               >
                 Dashboard
