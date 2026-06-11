@@ -4,6 +4,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import logoAsset from "@/assets/xcapture-logo.png.asset.json";
 import { TiltLogo } from "@/components/TiltLogo";
+import { AICapture } from "@/components/AICapture";
 
 const ThreeBackground = lazy(() =>
   import("@/components/ThreeBackground").then((m) => ({
