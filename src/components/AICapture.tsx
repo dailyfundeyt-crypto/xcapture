@@ -105,6 +105,7 @@ async function callOwnAi(byok: Byok, source: string, kind: "url" | "text"): Prom
 
 export function AICapture() {
   const capture = useServerFn(captureArticle);
+  const save = useServerFn(saveArticle);
   const [kind, setKind] = useState<"url" | "text">("url");
   const [source, setSource] = useState("");
   const [vault, setVault] = useState("");
@@ -112,6 +113,15 @@ export function AICapture() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CaptureResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [savingLib, setSavingLib] = useState(false);
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const [byok, setByok] = useState<Byok>(() => loadByok());
   const [showByok, setShowByok] = useState(false);
