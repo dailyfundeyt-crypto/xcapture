@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { generateText, Output } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import { createLovableAiGatewayProvider } from "../ai-gateway.server";
 
 const InputSchema = z.object({
   source: z.string().min(1).max(500_000),
