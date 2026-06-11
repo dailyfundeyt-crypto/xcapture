@@ -180,10 +180,46 @@ function WorkspacePage() {
     });
 
   // Chat
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        headers: (async () => {
+          const { supabase } = await import("@/integrations/supabase/client");
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          return token ? { Authorization: `Bearer ${token}` } : {};
+        }) as unknown as () => Record<string, string>,
+      }),
+    [],
+  );
   const { messages, sendMessage, status } = useChat({ transport });
   const [input, setInput] = useState("");
   const isBusy = status === "submitted" || status === "streaming";
+
+  // Refresh vault whenever the AI writes a note via the write_note tool
+  useEffect(() => {
+    if (status !== "ready") return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant") return;
+    let wrotePath: string | null = null;
+    for (const p of last.parts as Array<{ type: string; output?: unknown }>) {
+      if (p.type === "tool-write_note" && p.output) {
+        const out = p.output as { ok?: boolean; path?: string };
+        if (out.ok && out.path) {
+          wrotePath = out.path;
+          break;
+        }
+      }
+    }
+    if (wrotePath) {
+      refresh().catch(console.error);
+      setActivePath(wrotePath);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages]);
+
+
 
   const onSend = async () => {
     const text = input.trim();
