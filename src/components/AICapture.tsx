@@ -142,6 +142,7 @@ export function AICapture() {
   const run = async () => {
     setError(null);
     setResult(null);
+    setSuggestedFolder("");
     if (!source.trim()) {
       setError("Please paste a URL or text first.");
       return;
@@ -153,6 +154,17 @@ export function AICapture() {
           ? await callOwnAi(byok, source.trim(), kind)
           : await capture({ data: { source: source.trim(), kind } });
       setResult(r);
+      if (authed) {
+        // Fire-and-forget folder suggestion
+        classify({ data: { title: r.title, summary: r.summary, tags: r.tags } })
+          .then((c) => {
+            setSuggestedFolder(c.folder);
+            setFolderIsNew(c.isNew);
+          })
+          .catch(() => {
+            /* non-fatal */
+          });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
