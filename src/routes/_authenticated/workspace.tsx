@@ -180,10 +180,45 @@ function WorkspacePage() {
     });
 
   // Chat
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        headers: async () => {
+          const { supabase } = await import("@/integrations/supabase/client");
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          return token ? { Authorization: `Bearer ${token}` } : {};
+        },
+      }),
+    [],
+  );
   const { messages, sendMessage, status } = useChat({ transport });
   const [input, setInput] = useState("");
   const isBusy = status === "submitted" || status === "streaming";
+
+  // Refresh vault whenever the AI writes a note via the write_note tool
+  useEffect(() => {
+    if (status !== "ready") return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant") return;
+    const wrote = last.parts.some(
+      (p: { type: string; toolName?: string; output?: { ok?: boolean; path?: string } }) =>
+        p.type?.startsWith("tool-") &&
+        (p.toolName === "write_note" || p.type === "tool-write_note") &&
+        p.output?.ok,
+    );
+    if (wrote) {
+      refresh().catch(console.error);
+      const written = last.parts.find(
+        (p: { type: string; output?: { path?: string } }) =>
+          p.type === "tool-write_note" && p.output?.path,
+      ) as { output?: { path?: string } } | undefined;
+      if (written?.output?.path) setActivePath(written.output.path);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages]);
+
 
   const onSend = async () => {
     const text = input.trim();
