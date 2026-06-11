@@ -78,7 +78,7 @@ function SettingsPage() {
     setTimeout(() => setMsg(null), 2500);
   };
 
-  const set = <K extends keyof Profile>(k: K, v: Profile[K]) =>
+  const set = <K extends keyof Profile,>(k: K, v: Profile[K]) =>
     setProfile((p) => (p ? { ...p, [k]: v } : p));
 
   const onPickAvatar = async (file: File) => {
