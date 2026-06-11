@@ -56,9 +56,43 @@ export type Database = {
         }
         Relationships: []
       }
+      google_connections: {
+        Row: {
+          access_token: string
+          created_at: string
+          drive_folder_id: string | null
+          expires_at: string
+          refresh_token: string
+          scope: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          drive_folder_id?: string | null
+          expires_at: string
+          refresh_token: string
+          scope?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          drive_folder_id?: string | null
+          expires_at?: string
+          refresh_token?: string
+          scope?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           ai_model: string | null
+          avatar_url: string | null
           byok_endpoint: string | null
           byok_key: string | null
           byok_model: string | null
@@ -71,6 +105,7 @@ export type Database = {
         }
         Insert: {
           ai_model?: string | null
+          avatar_url?: string | null
           byok_endpoint?: string | null
           byok_key?: string | null
           byok_model?: string | null
@@ -83,6 +118,7 @@ export type Database = {
         }
         Update: {
           ai_model?: string | null
+          avatar_url?: string | null
           byok_endpoint?: string | null
           byok_key?: string | null
           byok_model?: string | null
@@ -112,6 +148,36 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vault_files: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_folder: boolean
+          path: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_folder?: boolean
+          path: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_folder?: boolean
+          path?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

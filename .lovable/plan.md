@@ -1,77 +1,44 @@
-## Ziel
+# Plan: Profilbild, Auto-Folder-KI, Workspace & Google Drive
 
-1. Nutzer meldet sich auf xcapture.lovable.app an (E-Mail/Passwort + Google).
-2. Die Chrome-Extension nutzt **dieselben** Login-Daten → eigene Einstellungen & gespeicherte Artikel werden synchronisiert.
-3. Telegram-Bot, der pro Nutzer alle gespeicherten Artikel kennt, neue automatisch in den richtigen Obsidian-Ordner einsortiert und im Chat Fragen dazu beantwortet.
+## 1. Profilbild
+- Neuer Storage Bucket `avatars` (privat, RLS pro User).
+- `profiles.avatar_url` Spalte hinzufügen.
+- Upload-UI in Settings: Bild auswählen → in `avatars/{user_id}/avatar.{ext}` speichern → URL ins Profil.
+- Avatar wird im Header und in der neuen Workspace-Topbar angezeigt.
 
-## Architektur
+## 2. Auto-Folder beim Speichern
+- Neue Server-Funktion `classifyArticle`: nimmt Titel + Summary + Tags, ruft Lovable AI (`google/gemini-3-flash-preview`) und gibt einen Ordnernamen zurück (aus den bisher genutzten Ordnern des Users + Vorschlag für neuen Ordner).
+- Beim "Save to Library" in `AICapture` wird automatisch ein Ordner vorgeschlagen, den der User vor dem finalen Speichern noch ändern kann (Dropdown mit "Vorgeschlagen: X").
 
-```text
- Chrome Extension ──┐
-                    ├──► Lovable Cloud (Supabase)
- Web App  ──────────┤      ├─ auth.users         (gemeinsamer Login)
-                    │      ├─ profiles           (Vault-Pfad, Default-Folder, AI-Settings)
-                    │      ├─ articles           (URL, Markdown, Tags, Folder, captured_at)
-                    │      ├─ telegram_links     (user_id ↔ telegram_chat_id, Pairing-Token)
-                    │      └─ telegram_messages  (Chat-Verlauf je Nutzer)
-                    │
- Telegram Bot ──────┘──► /api/public/telegram/webhook  (TanStack server route)
-                            └─ AI Agent (Lovable AI, Gemini 3 Flash)
-                                ├─ Tool: list_articles / search_articles
-                                ├─ Tool: file_article(article_id, folder)
-                                └─ Tool: summarize / answer_questions
-```
+## 3. Workspace `/workspace` (neue Hauptoberfläche)
+Geteilte Ansicht (resizable, Standard 40/60):
+- **Links — Chat mit KI**
+  - Streaming-Chat über `/api/chat` (AI SDK + Lovable AI).
+  - Hat Kontext aller gespeicherten Artikel und der aktuell geöffneten Note rechts.
+  - "Save this as note" Button → erzeugt Markdown-Datei im Vault.
+- **Rechts — Vault-Editor (Obsidian-Ersatz "Viewer")**
+  - Ordnerbaum links innen, Markdown-Editor rechts.
+  - Live-Preview Toggle (Edit / Split / Preview).
+  - Backed by Lovable Cloud (Tabelle `vault_files`: `path`, `content`, `user_id`) — funktioniert sofort.
+  - Optional: Sync mit Google Drive.
 
-## Phase 1 — Lovable Cloud + Auth (heute)
+## 4. Google Drive OAuth (per User)
+Per-User OAuth (nicht Workspace-Connector). Ablauf:
+- Du legst in Google Cloud Console OAuth-Credentials an (Web-App, Scope `drive.file`), gibst Client-ID/Secret als Secrets `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` in Lovable Cloud ein.
+- Neue Server-Routes:
+  - `GET /api/google/connect` → leitet zu Google OAuth.
+  - `GET /api/google/callback` → tauscht Code gegen Tokens, speichert verschlüsselt in `google_connections` Tabelle (user_id, refresh_token, access_token, expiry).
+- "Connect Google Drive" Button in Settings.
+- Vault-Editor zeigt zusätzliches Toggle "Sync to Drive folder XCapture/" — beim Speichern wird die Datei zusätzlich nach Google Drive geschrieben (`files.create` via Connector-Gateway-Style fetch mit user-token).
 
-- Lovable Cloud aktivieren (Supabase im Hintergrund).
-- DB-Migration:
-  - `profiles` (id=auth.uid, display_name, obsidian_vault, default_folder, ai_model, byok_endpoint, byok_key_enc).
-  - `articles` (id, user_id, source_url, title, markdown, tags[], folder, summary, created_at).
-  - `user_roles` + `has_role()` (Standard-Pattern für später).
-  - RLS: alles `auth.uid() = user_id`.
-- Auth-Seite `/auth` mit E-Mail/Passwort + Google (über Lovable-Broker).
-- Geschützter `/dashboard` mit:
-  - Liste der gespeicherten Artikel
-  - Profil-Settings (Vault-Name, Default-Folder, AI-Settings — BYOK aus Phase 0 wandert hierher)
-- Bestehende `AICapture`-Demo speichert ab jetzt für eingeloggte Nutzer direkt in `articles`.
+## Reihenfolge der Implementierung
+1. Migration: `vault_files`, `google_connections`, `profiles.avatar_url`; Storage Bucket `avatars` + Policies.
+2. Profilbild-Upload in Settings.
+3. `classifyArticle` Server-Fn + Integration in AICapture-Save.
+4. `/workspace` Route: Chat + Vault-Editor (Lovable Cloud Storage).
+5. Google OAuth Routes + Connect-Button + Drive-Sync.
 
-## Phase 2 — Extension-Sync
+## Hinweis
+Google Drive per-User OAuth braucht ein **einmaliges Setup deinerseits in Google Cloud Console** (ca. 5 Min). Ich erkläre dir Schritt für Schritt was du dort klicken musst, sobald wir bei Schritt 5 sind.
 
-- Extension bekommt Login-Screen (in popup.html). Verwendet `@supabase/supabase-js` mit derselben URL + Publishable Key wie die Website → identische Session.
-- Nach Login: pollt/lädt `profiles` + speichert Captures via PostgREST direkt in `articles`.
-- Code dafür generiere ich hier; du pushst ihn ins GitHub-Repo `X-Article-Extension`. Auf der Website biete ich Download des neuen ZIPs an.
-
-## Phase 3 — Telegram-Agent
-
-- Telegram-Connector verbinden (Bot bei BotFather erstellt der Nutzer einmalig, Token kommt in Connector — kein manuelles Hantieren).
-- DB: `telegram_links(user_id, chat_id, pairing_token, paired_at)`.
-- Dashboard zeigt Button **„Mit Telegram verbinden"** → erzeugt 6-stelligen Code → User schickt `/start <code>` an den Bot → Verknüpfung gespeichert.
-- Webhook `src/routes/api/public/telegram/webhook.ts`:
-  - Verifiziert `X-Telegram-Bot-Api-Secret-Token`.
-  - Lädt `user_id` aus `telegram_links`.
-  - Lädt Artikelliste des Nutzers + Chat-Historie.
-  - Ruft Lovable AI (Gemini 3 Flash) mit Tools auf:
-    - `list_articles(limit, since)` 
-    - `search_articles(query)`
-    - `move_article_to_folder(id, folder)`
-    - `summarize_article(id)`
-  - Antwort zurück an Telegram.
-- Auto-Filing: wenn ein neuer Artikel gespeichert wird, schickt der Server eine Benachrichtigung mit AI-Vorschlag für den Ordner; Nutzer bestätigt per Button (Inline-Keyboard).
-
-## Was du am Ende hast
-
-- 1 Login für Web + Extension.
-- Alle Captures landen in einer zentralen Bibliothek pro Nutzer.
-- Telegram-Chat: „Was hab ich diese Woche zu KI gespeichert?", „Verschieb den letzten Artikel nach /Marketing", „Fass den X-Thread von gestern zusammen".
-
-## Technische Hinweise (intern)
-
-- Schemas mit `GRANT SELECT, INSERT, UPDATE, DELETE … TO authenticated` + RLS-Policies via `auth.uid()`.
-- BYOK-Key in `profiles.byok_key_enc` mit `pgcrypto` (`pgp_sym_encrypt` + Server-Secret) — niemals Klartext im Frontend lesbar.
-- Telegram-Webhook unter `/api/public/telegram/webhook`, Secret-Token = `sha256("telegram-webhook:" + TELEGRAM_API_KEY)`.
-- AI-Tool-Loop: `generateText` mit `tools` + `stopWhen: stepCountIs(50)`.
-
-## Nächster Schritt
-
-Wenn du den Plan absegnest, fange ich mit **Phase 1** an (Cloud + Auth + DB + Dashboard). Phase 2 und 3 mache ich danach in jeweils einem eigenen Schritt — das ist sauberer als alles auf einmal zu schippen.
+Soll ich starten?
