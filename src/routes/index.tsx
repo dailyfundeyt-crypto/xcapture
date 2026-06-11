@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Download, Chrome, FileDown, Zap, Shield, Github, Copy, Check } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import logoAsset from "@/assets/xcapture-logo.png.asset.json";
 import { TiltLogo } from "@/components/TiltLogo";
 import { AICapture } from "@/components/AICapture";
+import { supabase } from "@/integrations/supabase/client";
 
 const ThreeBackground = lazy(() =>
   import("@/components/ThreeBackground").then((m) => ({
