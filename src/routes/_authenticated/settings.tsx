@@ -93,7 +93,7 @@ function SettingsPage() {
               </Field>
             </Section>
 
-            <Section title="Obsidian" description="Used for 1-click „Open in Obsidian" links.">
+            <Section title="Obsidian" description='Used for 1-click "Open in Obsidian" links.'>
               <Field label="Vault name">
                 <input
                   value={profile.obsidian_vault ?? ""}
