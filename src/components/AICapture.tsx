@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles,
@@ -10,9 +10,13 @@ import {
   Key,
   Loader2,
   ExternalLink,
+  CloudUpload,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { captureArticle } from "@/lib/api/capture.functions";
+import { saveArticle } from "@/lib/api/articles.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "@tanstack/react-router";
 
 type CaptureResult = {
   title: string;
