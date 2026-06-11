@@ -12,7 +12,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { captureArticle } from "@/lib/capture.functions";
+import { captureArticle } from "@/lib/api/capture.functions";
 
 type CaptureResult = {
   title: string;
